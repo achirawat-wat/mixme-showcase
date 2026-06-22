@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Check } from 'lucide-react';
 
-const InteractivePickbase = ({ mockAlcohols, activeId, setActiveId, pickedIds, togglePick, onNext }) => {
+// เพิ่ม onBack รับค่ามาจากไฟล์หลัก
+const InteractivePickbase = ({ mockAlcohols, activeId, setActiveId, pickedIds, togglePick, onNext, onBack }) => {
   const selectedBase = mockAlcohols.find((a) => a.id === activeId);
   const isActivePicked = pickedIds.includes(activeId);
   const isNextDisabled = pickedIds.length === 0;
@@ -13,7 +14,10 @@ const InteractivePickbase = ({ mockAlcohols, activeId, setActiveId, pickedIds, t
       style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: '90px' }}
     >
       <div style={styles.header}>
-        <button style={styles.backButton} disabled><ArrowLeft size={24} color="#0f172a" /></button>
+        {/* เอา disabled ออก และใส่ onClick={onBack} */}
+        <button style={styles.backButton} onClick={onBack}>
+          <ArrowLeft size={24} color="#0f172a" />
+        </button>
         <h2 style={styles.headerTitle}>Pick Your Base</h2>
       </div>
 
@@ -32,7 +36,6 @@ const InteractivePickbase = ({ mockAlcohols, activeId, setActiveId, pickedIds, t
 
       <div>
         <div style={styles.infoBox}>Please press the select button to choose base.</div>
-        {/* ใช้ flex 1 เพื่อแบ่งการ์ดให้พอดีจอ */}
         <div style={styles.cardRow}>
           {mockAlcohols.map((item) => {
             const isActive = activeId === item.id;
@@ -42,7 +45,7 @@ const InteractivePickbase = ({ mockAlcohols, activeId, setActiveId, pickedIds, t
                 key={item.id} onClick={() => setActiveId(item.id)}
                 style={{
                   ...styles.card,
-                  flex: isActive ? 1.15 : 1, // บังคับพอดีจอ (อันที่เลือกจะกว้างกว่านิดหน่อย)
+                  flex: isActive ? 1.15 : 1,
                   height: isActive ? 110 : 95,
                   boxShadow: isActive ? "0 8px 20px rgba(0,0,0,0.12)" : "0 4px 10px rgba(0,0,0,0.06)",
                   border: isPicked ? "2px solid #10b981" : "2px solid transparent",

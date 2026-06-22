@@ -47,10 +47,14 @@ export default function HeroSection({ isDevMode, features }) {
               ตั้งแต่การเลือกสูตรบนหน้าเว็บ ไปจนถึงการควบคุมอุปกรณ์จริงผ่าน ESP32 แบบ Real-time
             </motion.p>
 
-            <motion.div className="hero-features" variants={itemVariants}>
-              {features.map((item, index) => (
-                <span key={index}>{item}</span>
-              ))}
+            {/* กล่องครอบ Features เพื่อใส่ Hint */}
+            <motion.div className="hero-features-wrapper" variants={itemVariants}>
+              <div className="swipe-hint">← Swipe to explore →</div>
+              <div className="hero-features">
+                {features.map((item, index) => (
+                  <span key={index}>{item}</span>
+                ))}
+              </div>
             </motion.div>
 
             <motion.div className="hero-stats" variants={itemVariants}>
@@ -116,7 +120,6 @@ export default function HeroSection({ isDevMode, features }) {
                 </>
               )}
 
-              {/* เอาแอนิเมชันลอยขึ้นลงออก โทรศัพท์จะอยู่นิ่งๆ ให้กดง่ายขึ้น */}
               <InteractiveMixer isDevMode={isDevMode} />
 
             </div>
@@ -198,11 +201,19 @@ export default function HeroSection({ isDevMode, features }) {
           margin-bottom: 2rem;
         }
 
+        .hero-features-wrapper {
+          width: 100%;
+          margin-bottom: 2rem;
+        }
+
+        .swipe-hint {
+          display: none; /* ซ่อนไว้ในหน้าจอ PC */
+        }
+
         .hero-features {
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
-          margin-bottom: 2rem;
         }
 
         .hero-features span {
@@ -411,8 +422,73 @@ export default function HeroSection({ isDevMode, features }) {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
           }
-          .hero-features { justify-content: center; }
+
+          /* แอนิเมชันให้ข้อความ Hint กระพริบเบาๆ ดึงดูดสายตา */
+          @keyframes pulse-hint {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+          }
+
+          .swipe-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            animation: pulse-hint 2s infinite ease-in-out;
+          }
+
+          .dev-mode-active .swipe-hint {
+            color: #4ade80;
+          }
+          
+          /* --- ทำให้ Feature เลื่อนซ้ายขวาได้บนมือถือ พร้อม Scrollbar บางๆ --- */
+          .hero-features { 
+            justify-content: flex-start;
+            flex-wrap: nowrap; 
+            overflow-x: auto; 
+            width: 100%;
+            padding-bottom: 12px; 
+            -webkit-overflow-scrolling: touch; 
+            
+            /* แสดง Scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+          }
+
+          .hero-features::-webkit-scrollbar {
+            height: 4px;
+            display: block;
+          }
+          .hero-features::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.02);
+            border-radius: 10px;
+          }
+          .hero-features::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+          }
+
+          /* สี Scrollbar ตอนเป็น Dev Mode */
+          .dev-mode-active .hero-features {
+            scrollbar-color: rgba(74,222,128,0.5) transparent;
+          }
+          .dev-mode-active .hero-features::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+          }
+          .dev-mode-active .hero-features::-webkit-scrollbar-thumb {
+            background: rgba(74,222,128,0.5);
+          }
+
+          .hero-features span {
+            flex-shrink: 0; 
+            white-space: nowrap; 
+          }
+
           .hero-stats { justify-content: center; }
           .status-1, .status-2, .status-3 { display: none; }
           .title-nowrap { white-space: normal; } 

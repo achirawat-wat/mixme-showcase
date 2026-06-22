@@ -69,7 +69,7 @@ const MOCK_MIXERS = [
 const ALL_INGREDIENTS = [...MOCK_ALCOHOLS, ...MOCK_MIXERS];
 
 const InteractiveMixer = ({ isDevMode }) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
 
   const [activeId, setActiveId] = useState(MOCK_ALCOHOLS[0].id);
   const [pickedIds, setPickedIds] = useState([]);
@@ -97,6 +97,83 @@ const InteractiveMixer = ({ isDevMode }) => {
 
   const renderStep = () => {
     switch (step) {
+      case 0:
+        return (
+          <div style={isDevMode ? styles.devWelcomeContainer : styles.appleWelcomeContainer}>
+            {!isDevMode ? (
+              // โหมดปกติ: Apple Aesthetic เรียบหรู คลีนๆ
+              <>
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  transition={{ type: "spring", duration: 0.8, bounce: 0.4 }}
+                  style={styles.appleIconBox}
+                >
+                  <GlassWater size={36} color="#1d1d1f" strokeWidth={1.5} />
+                </motion.div>
+                
+                <motion.h2 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.6 }}
+                  style={styles.appleTitle}
+                >
+                  MixMe.
+                </motion.h2>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  style={styles.appleSubtitle}
+                >
+                  The future of beverage automation, <br/> right in your hands.
+                </motion.p>
+
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  onClick={() => setStep(1)}
+                  style={styles.appleBtn}
+                >
+                  Start Mixing
+                </motion.button>
+              </>
+            ) : (
+              // Dev Mode: Pure Terminal แบบไม่มีแถบด้านบน
+              <div style={styles.macTerminalWindow}>
+                <div style={styles.macTerminalBody}>
+                  <p style={styles.devLine}><span style={{color: '#94a3b8'}}>Loading kernel modules...</span> [OK]</p>
+                  <p style={styles.devLine}><span style={{color: '#94a3b8'}}>Mounting ESP32 peripheral...</span> [ONLINE]</p>
+                  <p style={styles.devLine}><span style={{color: '#94a3b8'}}>Connecting Supabase DB...</span> [ACTIVE]</p>
+                  <br/>
+                  <p style={styles.devLine}><span style={{color: '#38bdf8'}}>System is ready.</span></p>
+                  
+                  <div style={styles.devCursorLine}>
+                    <span>admin@mixme:~$ </span>
+                    <motion.span 
+                      animate={{ opacity: [1, 0, 1] }} 
+                      transition={{ repeat: Infinity, duration: 1 }}
+                      style={styles.devCursor}
+                    />
+                  </div>
+
+                  <motion.button
+                    whileHover={{ backgroundColor: "rgba(74, 222, 128, 0.1)" }}
+                    onClick={() => setStep(1)}
+                    style={styles.devWelcomeBtn}
+                  >
+                    &gt; RUN INTERFACE
+                  </motion.button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
       case 1:
         return (
           <InteractivePickbase
@@ -106,6 +183,7 @@ const InteractiveMixer = ({ isDevMode }) => {
             pickedIds={pickedIds}
             togglePick={togglePick}
             onNext={() => setStep(2)}
+            onBack={() => setStep(0)}
           />
         );
 
@@ -143,19 +221,20 @@ const InteractiveMixer = ({ isDevMode }) => {
     }
   };
 
-  // ฟังก์ชันดึงคำสั่ง SQL สั้นๆ ตาม Step
   const getSqlSnippet = () => {
     switch (step) {
+      case 0:
+        return "CONNECT 'postgres://mixme_db';"; 
       case 1:
-        return "> SELECT * FROM ingredients WHERE type = 'alcohol';";
+        return "SELECT * FROM ingredients;";
       case 2:
-        return "> SELECT * FROM ingredients WHERE type = 'mixer';";
+        return "SELECT * FROM mixers;";
       case 3:
-        return "> CREATE TABLE orders (id UUID, recipe JSONB);";
+        return "CREATE TABLE orders (id UUID);";
       case 4:
-        return "> INSERT INTO transactions (slip_img) VALUES ($1);";
+        return "INSERT INTO tx (slip) VALUES ($1);";
       default:
-        return "> EXECUTE dispensing_protocol();";
+        return "EXECUTE dispensing_protocol();";
     }
   };
 
@@ -164,15 +243,8 @@ const InteractiveMixer = ({ isDevMode }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        {/* สำคัญมาก: ต้องส่ง prop isDevMode เข้าไปด้วยครับ */}
         <DispensingState isDevMode={isDevMode} />
       </motion.div>
     );
@@ -180,30 +252,35 @@ const InteractiveMixer = ({ isDevMode }) => {
 
   return (
     <div style={{ position: 'relative' }}>
+      
       {/* Dev Mode Code Popup */}
       {isDevMode && (
         <motion.div
           className="code-popup mobile-code"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          key={step} // ใส่ key ให้มัน animate ใหม่ทุกครั้งที่เปลี่ยน step
+          key={step}
           style={{
             position: 'absolute',
-            top: '-50px',
+            top: '-55px',
             left: '0px',
             background: '#111827',
-            color: '#38bdf8', /* เปลี่ยนสีตัวหนังสือเป็นสีฟ้าให้ดูเหมือน syntax highlight */
+            color: '#38bdf8',
             padding: '8px 14px',
             borderRadius: '8px',
             fontFamily: 'monospace',
             fontSize: '13px',
             border: '1px solid #1f2937',
             zIndex: 20,
-            whiteSpace: 'nowrap',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+            
+            width: 'fit-content',
+            minWidth: '220px',
+            maxWidth: '340px', 
+            whiteSpace: 'nowrap', 
           }}
         >
-          <code>{getSqlSnippet()}</code>
+          <code>{`> ${getSqlSnippet()}`}</code>
         </motion.div>
       )}
 
@@ -217,7 +294,7 @@ const InteractiveMixer = ({ isDevMode }) => {
         <div
           className="mobile-screen"
           style={{
-            backgroundColor: '#ffffff',
+            backgroundColor: isDevMode && step === 0 ? '#000000' : '#ffffff',
             overflow: 'hidden',
             position: 'relative'
           }}
@@ -229,18 +306,139 @@ const InteractiveMixer = ({ isDevMode }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              style={{
-                width: '100%',
-                height: '100%'
-              }}
+              style={{ width: '100%', height: '100%' }}
             >
               {renderStep()}
             </motion.div>
           </AnimatePresence>
         </div>
       </motion.div>
+
+      <style>{`
+        @media (max-width: 480px) {
+          .code-popup {
+            font-size: 11px !important;
+            padding: 6px 10px !important;
+            top: -45px !important;
+            max-width: 280px !important;
+          }
+        }
+      `}</style>
     </div>
   );
+};
+
+// ==========================================
+// สไตล์เฉพาะสำหรับหน้า Welcome (State 0)
+// ==========================================
+const styles = {
+  // --- Apple Aesthetic (Light Mode) ---
+  appleWelcomeContainer: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '32px 24px',
+    textAlign: 'center',
+    backgroundColor: '#fbfbfd',
+    color: '#1d1d1f',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
+  },
+  appleIconBox: {
+    width: '80px',
+    height: '80px',
+    backgroundColor: '#ffffff',
+    borderRadius: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.02)',
+    marginBottom: '24px'
+  },
+  appleTitle: {
+    fontSize: '32px',
+    fontWeight: '700',
+    letterSpacing: '-0.03em',
+    margin: '0 0 8px 0',
+    color: '#1d1d1f'
+  },
+  appleSubtitle: {
+    fontSize: '15px',
+    color: '#86868b',
+    lineHeight: '1.4',
+    marginBottom: '40px',
+    fontWeight: '400'
+  },
+  appleBtn: {
+    backgroundColor: '#1d1d1f',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '980px',
+    padding: '16px 36px',
+    fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    boxShadow: '0 4px 14px rgba(0,0,0,0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%'
+  },
+
+  // --- Pure Terminal (Dev Mode) ---
+  devWelcomeContainer: {
+    height: '100%',
+    backgroundColor: '#000000',
+    paddingTop: '45px', // ดันเนื้อหาลงมาให้พ้นรอยบาก (Notch)
+  },
+  macTerminalWindow: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  // ลบ macTerminalHeader ออกไปแล้ว
+  macTerminalBody: {
+    padding: '20px',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    fontFamily: '"Courier New", monospace',
+    fontSize: '13px',
+    color: '#4ade80',
+    lineHeight: '1.6'
+  },
+  devLine: {
+    margin: 0,
+    whiteSpace: 'nowrap'
+  },
+  devCursorLine: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: '12px'
+  },
+  devCursor: {
+    display: 'inline-block',
+    width: '8px',
+    height: '15px',
+    backgroundColor: '#4ade80',
+    marginLeft: '6px'
+  },
+  devWelcomeBtn: {
+    width: '100%',
+    padding: '14px',
+    background: 'transparent',
+    color: '#4ade80',
+    border: '1px dashed #4ade80',
+    borderRadius: '6px',
+    fontFamily: 'monospace',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    marginTop: 'auto', // ดันปุ่มไปล่างสุดของจอ
+    marginBottom: '20px'
+  }
 };
 
 export default InteractiveMixer;

@@ -50,11 +50,11 @@ export default function AdminSection() {
 
         .section-header {
           text-align: center;
-          margin-bottom: 2rem; /* ลดระยะห่างลง */
+          margin-bottom: 2rem;
         }
 
         .section-header h2 {
-          font-size: clamp(1.8rem, 3.5vw, 3rem); /* ลดขนาดหัวข้อลงเล็กน้อย */
+          font-size: clamp(1.8rem, 3.5vw, 3rem);
           margin-bottom: 0.8rem;
         }
 
@@ -79,17 +79,16 @@ export default function AdminSection() {
           margin-bottom: 1rem;
         }
 
-        /* MACBOOK MOCKUP */
+        /* MACBOOK MOCKUP (Desktop) */
         .macbook-mockup {
           width: 100%;
-          max-width: 860px; /* ลดขนาดลงให้จอ 16:9 ยัดพอดี */
+          max-width: 860px;
           aspect-ratio: 16 / 10;
           background: #334155;
           border-radius: 20px 20px 0 0;
           border: 10px solid #1e293b;
           border-bottom: 20px solid #0f172a;
           position: relative;
-          /* เอา overflow: hidden ออกเพื่อให้ popup ลอยออกไปด้านข้างได้ */
           margin: 0 auto;
           box-shadow: 0 40px 80px rgba(15,23,42,.15);
         }
@@ -99,9 +98,60 @@ export default function AdminSection() {
           color: #94a3b8;
         }
 
+        /* =========================================
+           RESPONSIVE (Tablet & Mobile)
+           ========================================= */
+
+        @media (max-width: 1024px) {
+          /* บน iPad ยกเลิก 16:10 และกำหนดความสูงตายตัวให้ข้อมูลไม่โดนบีบ */
+          .macbook-mockup {
+            aspect-ratio: auto;
+            height: 700px;
+          }
+          
+          /* ดึง SQL Popup กลับเข้ามาหน่อย */
+          .sandbox-section .sql-1 { left: -40px !important; }
+          .sandbox-section .sql-2 { right: -40px !important; }
+        }
+
         @media (max-width: 768px) {
+          .sandbox-section {
+            /* เพิ่ม Padding ด้านล่างเยอะขึ้น เพื่อรับรองความสูงของกล่อง SQL ทั้ง 2 กล่อง */
+            padding: 80px 4% 500px;
+          }
+
           .section-header h2 {
             font-size: 2rem;
+          }
+
+          .macbook-mockup {
+            height: 580px; /* ลดความสูงของหน้าจอมือถือลงมาตามที่คุณต้องการ */
+            border-width: 6px;
+            border-bottom-width: 12px;
+            border-radius: 12px 12px 0 0;
+          }
+
+          /* --- จัดการ SQL Popups ตอนเป็น Mobile --- */
+          /* บังคับให้อยู่กึ่งกลางหน้าจอ */
+          .sandbox-section .sql-popup {
+            width: 90% !important;
+            max-width: 320px !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            z-index: 100 !important;
+          }
+
+          /* ย้ายกล่องแรกลงมาต่อใต้จอ MacBook โดยวัดจากระยะ 100% ของจอ */
+          .sandbox-section .sql-1 {
+            top: calc(100% + 20px) !important;
+            bottom: auto !important;
+          }
+
+          /* ย้ายกล่องสองลงมาเรียงต่อจากกล่องแรก (กะเผื่อความสูงกล่องแรกไว้ประมาณ 220px) */
+          .sandbox-section .sql-2 {
+            top: calc(100% + 260px) !important;
+            bottom: auto !important;
           }
         }
       `}</style>
