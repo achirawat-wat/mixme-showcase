@@ -1,16 +1,85 @@
-# React + Vite
+# MixMe Showcase
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MixMe Showcase is a portfolio website created to demonstrate the design, user experience, and technical implementation of the **MixMe Smart IoT Beverage Automation System**.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+https://mixme-showcase.vercel.app/
 
-## React Compiler
+## Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+MixMe is a self-service beverage automation platform that allows users to create custom drink recipes, place orders through a web interface, and communicate with an IoT-powered dispensing machine.
 
-## Expanding the ESLint configuration
+This showcase presents the complete user journey, including:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* Drink customization experience
+* Smart ordering workflow
+* PromptPay payment simulation
+* QR Code order pickup system
+* Real-time dispensing process
+* Admin dashboard features
+* IoT machine integration architecture
+
+## Features
+
+### Customer Experience
+
+* Custom drink creation
+* Ingredient selection interface
+* Real-time order flow visualization
+* PromptPay payment simulation
+* QR Code pickup workflow
+* Mobile-first responsive design
+
+### Administration
+
+* Ingredient management
+* Recipe management
+* Order monitoring
+* Analytics dashboard preview
+* Machine status monitoring
+
+### IoT Integration
+
+* ESP32-based beverage machine
+* Pump control system
+* QR Scanner integration
+* Cup detection system
+* Liquid level monitoring
+* Supabase-powered data synchronization
+
+## Tech Stack
+
+### Frontend
+
+* React
+* Vite
+* JavaScript
+* CSS3
+
+### Backend & Database
+
+* Supabase
+* PostgreSQL
+* REST API
+
+### IoT
+
+* ESP32
+* Relay Control
+* QR Scanner
+* OLED Display
+* Sensor Integration
+
+## Purpose
+
+This project was developed as a showcase website to demonstrate the architecture, user interface, and system workflow of the MixMe Smart IoT Beverage Automation System.
+
+## Author
+
+Achirawat Wattanaworapant
+
+Full-Stack & IoT Engineer
+
+Portfolio:
+https://mixme-showcase.vercel.app/
