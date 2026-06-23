@@ -77,7 +77,7 @@ This project was developed as a showcase website to demonstrate the architecture
 
 ## Author
 
-Achirawat Wattanaworapant
+Achirawat Watthanavorapant
 
 Full-Stack & IoT Engineer
 
