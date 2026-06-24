@@ -80,6 +80,3 @@ This project was developed as a showcase website to demonstrate the architecture
 Achirawat Watthanavorapant
 
 Full-Stack & IoT Engineer
-
-Portfolio:
-https://mixme-showcase.vercel.app/
